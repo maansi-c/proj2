@@ -641,7 +641,7 @@ ir_node *new_bd_riscv_jal(dbg_info *dbgi, ir_node *block, int const arity, ir_no
 	return optimize_node(res);
 }
 
-ir_node *new_bd_riscv_jalr(dbg_info *dbgi, ir_node *block, int const arity, ir_node *const *const in, arch_register_req_t const **const in_reqs, int n_res)
+ir_node *new_bd_riscv_jalr(dbg_info *dbgi, ir_node *block, int const arity, ir_node *const *const in, arch_register_req_t const **const in_reqs, int n_res, unsigned n_params)
 {
 
 
@@ -653,8 +653,9 @@ ir_node *new_bd_riscv_jalr(dbg_info *dbgi, ir_node *block, int const arity, ir_n
 	/* flags */
 	arch_irn_flags_t irn_flags = arch_irn_flags_none;
 	be_info_init_irn(res, irn_flags, in_reqs, n_res);
-	riscv_attr_t *const attr = (riscv_attr_t*)get_irn_generic_attr(res);
+	riscv_jalr_attr_t *const attr = (riscv_jalr_attr_t*)get_irn_generic_attr(res);
 	(void)attr; /* avoid potential warning */
+	attr->n_params = n_params;
 
 	verify_new_node(res);
 	return optimize_node(res);
@@ -2182,9 +2183,9 @@ void riscv_create_opcodes(void)
 	set_op_copy_attr(op, be_copy_attr);
 	set_op_tag(op, riscv_op_tag);
 	op_riscv_jal = op;
-	op = new_ir_op(cur_opcode + iro_riscv_jalr, "riscv_jalr", op_pin_state_exc_pinned, irop_flag_none, oparity_any, -1, sizeof(riscv_attr_t));
+	op = new_ir_op(cur_opcode + iro_riscv_jalr, "riscv_jalr", op_pin_state_exc_pinned, irop_flag_none, oparity_any, -1, sizeof(riscv_jalr_attr_t));
 	set_op_dump(op, riscv_dump_node);
-	set_op_attrs_equal(op, riscv_attrs_equal);
+	set_op_attrs_equal(op, riscv_jalr_attrs_equal);
 	set_op_copy_attr(op, be_copy_attr);
 	set_op_tag(op, riscv_op_tag);
 	op_riscv_jalr = op;

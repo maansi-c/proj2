@@ -71,6 +71,8 @@ my $mode_gp = "mode_rv_gp";
 	riscv_immediate_attr_t =>
 		"attr->ent = ent;\n".
 		"\tattr->val = val;",
+	riscv_jalr_attr_t =>
+		"attr->n_params = n_params;",
 	riscv_switch_attr_t =>
 		"be_switch_attr_init(res, &attr->swtch, table, table_entity);",
 );
@@ -182,6 +184,9 @@ jal => {
 
 jalr => {
 	template => $callOp,
+	# Part B: allows arity to be visible in the jalr call translation
+	attr_type => "riscv_jalr_attr_t",
+	attr => "unsigned n_params"
 	# emit     => "jalr\t%S2",
 },
 

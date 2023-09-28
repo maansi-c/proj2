@@ -46,6 +46,11 @@ typedef struct riscv_immediate_attr_t {
 	int64_t      val;
 } riscv_immediate_attr_t;
 
+typedef struct riscv_jalr_attr_t {
+	riscv_attr_t attr;
+	unsigned n_params;
+} riscv_jalr_attr_t;
+
 typedef struct riscv_switch_attr_t {
 	riscv_attr_t     attr;
 	be_switch_attr_t swtch;
@@ -69,6 +74,11 @@ static inline riscv_immediate_attr_t *get_riscv_immediate_attr(ir_node *const no
 static inline riscv_immediate_attr_t const *get_riscv_immediate_attr_const(ir_node const *const node)
 {
 	return (riscv_immediate_attr_t const*)get_irn_generic_attr_const(node);
+}
+
+static inline riscv_jalr_attr_t const *get_riscv_jalr_attr_const(ir_node const *const node)
+{
+	return (riscv_jalr_attr_t const*)get_irn_generic_attr_const(node);
 }
 
 static inline riscv_switch_attr_t const *get_riscv_switch_attr_const(ir_node const *const node)

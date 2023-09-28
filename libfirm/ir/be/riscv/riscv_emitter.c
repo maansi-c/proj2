@@ -292,8 +292,11 @@ static void emit_riscv_jalr(ir_node const *const node)
 	const arch_register_t *jalr_dest_reg = arch_get_irn_register_in(node, 2);
 	const char *jalr_dest_reg_name = jalr_dest_reg->name;
 
+	// get the arity of the function -> used to determine the arity
+	const riscv_jalr_attr_t *jalr_attr = get_riscv_jalr_attr_const(node);
+
 	// load the hint insn in a register
-	be_emit_irprintf("li t0, 0x00002013\n");
+	be_emit_irprintf("li t0, 0x%03x02013\n", jalr_attr->n_params);
 
 	// read the hint encoding of destination register
 	be_emit_irprintf("lw t1, 0(%s)\n", jalr_dest_reg_name);
@@ -414,7 +417,14 @@ void riscv_emit_function(ir_graph *const irg)
 	be_gas_emit_function_prolog(entity, 4, NULL);
 
 	// add the hint insn -> slti x0, x0, 0 (for part A) -> prob should see if there's a better way to do this LOL without hardcoding
-	be_emit_irprintf("\t.insn 0x4, 0x00002013\n");
+	// be_emit_irprintf("\t.insn 0x4, 0x00002013\n");
+
+	// for part B: get the # of parameters
+	ir_type *const mtp     = get_entity_type(entity);
+	size_t   nparams = get_method_n_params(mtp);
+
+	// translate nparams -> hex to print
+	be_emit_irprintf("\t.insn 0x4, 0x%03x02013\n", nparams);
 
 	ir_node **const blk_sched = be_create_block_schedule(irg);
 	ir_reserve_resources(irg, IR_RESOURCE_IRN_LINK);

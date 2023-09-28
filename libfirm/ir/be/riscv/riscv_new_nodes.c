@@ -44,6 +44,15 @@ int riscv_immediate_attrs_equal(ir_node const *const a, ir_node const *const b)
 		a_attr->val == b_attr->val;
 }
 
+int riscv_jalr_attrs_equal(ir_node const* const a, ir_node const *const b)
+{
+	riscv_jalr_attr_t const *const a_attr = get_riscv_jalr_attr_const(a);
+	riscv_jalr_attr_t const *const b_attr = get_riscv_jalr_attr_const(b);
+	return
+		riscv_attrs_equal_(&a_attr->attr, &b_attr->attr) &&
+		a_attr->n_params == b_attr->n_params;
+}
+
 int riscv_switch_attrs_equal(ir_node const *const a, ir_node const *const b)
 {
 	riscv_switch_attr_t const *const a_attr = get_riscv_switch_attr_const(a);

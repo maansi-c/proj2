@@ -540,7 +540,7 @@ static ir_node *gen_Call(ir_node *const node)
 
 	ir_node *const jal = callee ?
 		new_bd_riscv_jal( dbgi, block, p, ins, reqs, n_res, callee, 0) :
-		new_bd_riscv_jalr(dbgi, block, p, ins, reqs, n_res);
+		new_bd_riscv_jalr(dbgi, block, p, ins, reqs, n_res, n_params); // Part B: add n_params as a parameter for the jalr instruction to access!
 
 	arch_set_irn_register_req_out(jal, pn_riscv_jal_M, arch_memory_req);
 	arch_copy_irn_out_info(jal, pn_riscv_jal_stack, sp);
