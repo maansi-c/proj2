@@ -286,6 +286,28 @@ static void emit_riscv_j(ir_node const *const node)
 	emit_jmp(node, node);
 }
 
+static void emit_riscv_jalr(ir_node const *const node)
+{
+	// find the register that the jalr node is supposed to jump to
+	const arch_register_t *jalr_dest_reg = arch_get_irn_register_in(node, 2);
+	const char *jalr_dest_reg_name = jalr_dest_reg->name;
+
+	// load the hint insn in a register
+	be_emit_irprintf("li t0, 0x00002013\n");
+
+	// read the hint encoding of destination register
+	be_emit_irprintf("lw t1, 0(%s)\n", jalr_dest_reg_name);
+
+	//check that the hint is correct
+	be_emit_irprintf("beq t0, t1, 0f\n", jalr_dest_reg_name);
+
+	// if incorrect, call ebreak
+	be_emit_irprintf("ebreak\n");
+
+	// if correct, actually make the jump
+	riscv_emitf(node, "0:\tjalr\t%S2");
+}
+
 static void emit_jumptable_target(ir_entity const *const table, ir_node const *const proj_x)
 {
   (void)table;
@@ -337,6 +359,7 @@ static void riscv_register_emitters(void)
 	be_set_emitter(op_riscv_FrameAddr, emit_riscv_FrameAddr);
 	be_set_emitter(op_riscv_bcc,       emit_riscv_bcc);
 	be_set_emitter(op_riscv_j,         emit_riscv_j);
+	be_set_emitter(op_riscv_jalr,	   emit_riscv_jalr);
 	be_set_emitter(op_riscv_SubSP,     emit_riscv_SubSP);
 	be_set_emitter(op_riscv_SubSPimm,  emit_riscv_SubSPimm);
 	be_set_emitter(op_riscv_switch,    emit_riscv_switch);
@@ -389,6 +412,9 @@ void riscv_emit_function(ir_graph *const irg)
 
 	ir_entity *const entity = get_irg_entity(irg);
 	be_gas_emit_function_prolog(entity, 4, NULL);
+
+	// add the hint insn -> slti x0, x0, 0 (for part A) -> prob should see if there's a better way to do this LOL without hardcoding
+	be_emit_irprintf("\t.insn 0x4, 0x00002013\n");
 
 	ir_node **const blk_sched = be_create_block_schedule(irg);
 	ir_reserve_resources(irg, IR_RESOURCE_IRN_LINK);

@@ -182,7 +182,7 @@ jal => {
 
 jalr => {
 	template => $callOp,
-	emit     => "jalr\t%S2",
+	# emit     => "jalr\t%S2",
 },
 
 lb => { template => $loadOp },
