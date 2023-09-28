@@ -738,6 +738,12 @@ static ir_entity *get_function_entity(function_t *const function)
 	}
 
 entity_created:
+	if (function->address_taken) {
+		set_entity_is_cfi_target(irentity, (unsigned int) 1);
+	}
+	else {
+		set_entity_is_cfi_target(irentity, (unsigned int) 0);
+	}
 	function->base.kind = DECLARATION_KIND_FUNCTION;
 	function->irentity  = irentity;
 
@@ -929,6 +935,10 @@ static ir_node *reference_addr(const reference_expression_t *ref)
 		return entity->variable.v.vla_base;
 
 	case DECLARATION_KIND_FUNCTION: {
+		entity->function.address_taken = true;
+		if (entity->function.irentity != NULL) {
+			set_entity_is_cfi_target(entity->function.irentity, (unsigned int) 1);
+		}
 		return new_d_Address(dbgi, entity->function.irentity);
 	}
 

@@ -65,6 +65,7 @@ static ir_entity *new_entity_vis(ir_type *owner, ident *name, ir_type *type,
 		res->attr.global.jit_addr        = (void*)-1;
 		res->attr.global.properties      = get_method_additional_properties(type);
 		res->attr.mtd_attr.vtable_number = IR_VTABLE_NUM_NOT_SET;
+		res->attr.mtd_attr.is_cfi_target = 0; // cfi target not determined
 		res->attr.mtd_attr.param_access  = NULL;
 		res->attr.mtd_attr.param_weight  = NULL;
 		res->attr.mtd_attr.irg           = NULL;
@@ -735,6 +736,18 @@ void set_entity_vtable_number(ir_entity *ent, unsigned vtable_number)
 {
 	assert(is_method_entity(ent));
 	ent->attr.mtd_attr.vtable_number = vtable_number;
+}
+
+unsigned get_entity_is_cfi_target(const ir_entity *ent)
+{
+	assert(is_method_entity(ent));
+	return ent->attr.mtd_attr.is_cfi_target;
+}
+
+void set_entity_is_cfi_target(ir_entity *ent, unsigned is_cfi_target)
+{
+	assert(is_method_entity(ent));
+	ent->attr.mtd_attr.is_cfi_target = is_cfi_target;
 }
 
 int is_unknown_entity(const ir_entity *entity)

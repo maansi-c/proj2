@@ -220,6 +220,8 @@ struct function_t {
 	ENUMBF(elf_visibility_t) elf_visibility   : 3;
 	/** builtin is library, this means you can safely take its address */
 	bool                     builtin_in_lib   : 1;
+	/** Set if the address of this declaration was taken. */
+	bool                     address_taken  : 1;
 	scope_t        parameters;
 	statement_t   *body;
 	symbol_t      *actual_name;        /**< gnu extension __REDIRECT */

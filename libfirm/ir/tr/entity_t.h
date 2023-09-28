@@ -121,6 +121,7 @@ typedef struct method_ent_attr {
 	ptr_access_kind *param_access; /**< the parameter access */
 	unsigned *param_weight;        /**< The weight of method's parameters. Parameters
 	                                    with a high weight are good candidates for procedure cloning. */
+	unsigned is_cfi_target;			/**< handling indirect target calls: 0 = not a target; 1 = a target */
 } method_ent_attr;
 
 /** additional attributes for code entities */

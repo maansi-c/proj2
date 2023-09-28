@@ -421,6 +421,12 @@ FIRM_API unsigned get_entity_vtable_number(const ir_entity *ent);
 /** Sets the entity vtable number. */
 FIRM_API void set_entity_vtable_number(ir_entity *ent, unsigned vtable_number);
 
+/** Returns the entity is_cfi_target. */
+FIRM_API unsigned get_entity_is_cfi_target(const ir_entity *ent);
+
+/** Sets the entity is_cfi_target. */
+FIRM_API void set_entity_is_cfi_target(ir_entity *ent, unsigned is_cfi_target);
+
 /** Sets label number of an entity with code type */
 FIRM_API void set_entity_label(ir_entity *ent, ir_label_t label);
 /** Returns label number of an entity with code type */
